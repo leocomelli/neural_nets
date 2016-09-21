@@ -7,5 +7,5 @@
 	- Backpropagation
 		- Classification
 		- Approximation
-	- Preceptron
+	- Perceptron
 		- :(
