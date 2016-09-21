@@ -84,5 +84,3 @@ if __name__ == '__main__':
     print "epoch: %4d" % t.totalepochs, \
           "  train error: %5.2f%%" % trnresult, \
           "  test error: %5.2f%%" % tstresult, \
-          #"  mean square error (mse): %s" % t.testOnData(tstdata), \
-          #"\nfinal weights: %s" % n.params

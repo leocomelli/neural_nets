@@ -1,17 +1,12 @@
-from pybrain.datasets import ClassificationDataSet
 from pybrain.datasets import SupervisedDataSet
 from pybrain.tools.shortcuts import buildNetwork
-from pybrain.optimization.populationbased.ga import GA
-from pybrain.utilities import percentError
 from pybrain.supervised import BackpropTrainer
-from pybrain.structure.modules import SoftmaxLayer
 
 def load_dataset(filename):
 
     with open(filename) as f:
         lines = f.read().splitlines()
 
-    #ds = ClassificationDataSet(14)
     ds = SupervisedDataSet(14, 1)
 
     for line in lines:
