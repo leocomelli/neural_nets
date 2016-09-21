@@ -1,4 +1,11 @@
 # Neural Networks
 
-- Logical AND Operator
-- Recognize symbols V and Λ
+- Supervised
+	- Adalaine
+		- Logical AND Operator
+		- Recognize symbols V and Λ
+	- Backpropagation
+		- Classification
+		- Approximation
+	- Preceptron
+		- :(
