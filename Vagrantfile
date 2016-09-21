@@ -10,4 +10,12 @@ Vagrant.configure(2) do |config|
   config.vm.box_version = "1.0"
 
   config.vm.synced_folder ".", "/neural_networks", type: "virtualbox"
+
+  config.vm.provision "shell" do |s|
+    s.args   = ENV['https_proxy']
+    s.inline = <<-SCRIPT
+      apt install -y gcc python-scipy python-matplotlib
+      pip install --proxy=${1} pybrain
+    SCRIPT
+  end
 end
