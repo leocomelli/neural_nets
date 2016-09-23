@@ -9,7 +9,7 @@ Vagrant.configure(2) do |config|
   config.vm.box = "leocomelli/python"
   config.vm.box_version = "1.0"
 
-  config.vm.synced_folder ".", "/neural_networks", type: "virtualbox"
+  config.vm.synced_folder ".", "/neural_nets", type: "virtualbox"
 
   config.vm.provision "shell" do |s|
     s.args   = ENV['https_proxy']
