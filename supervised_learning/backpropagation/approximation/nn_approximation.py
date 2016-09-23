@@ -28,23 +28,39 @@ def load_dataset(filename):
 
     return ds
 
-if __name__ == '__main__':
+def compute():
 
     ds = load_dataset('teste1.txt')
 
-    tstdata, trndata = ds.splitWithProportion(0.25)
+    tstdata, trndata = ds.splitWithProportion(0.15)
 
     print "Number of training patterns: ", len(trndata)
     print "Input and output dimensions: ", trndata.indim, trndata.outdim
     print "Number of testing patterns: ", len(tstdata)
     print "Input and output dimensions: ", tstdata.indim, tstdata.outdim
 
-    n = buildNetwork(trndata.indim, 300, trndata.outdim)
+    n = buildNetwork(trndata.indim, 500, trndata.outdim)
 
-    t = BackpropTrainer(n, dataset=trndata, momentum=0.1, verbose=True, weightdecay=0.01)
+    t = BackpropTrainer(n, dataset=trndata, momentum=0.1, learningrate=0.01, weightdecay=0.01) #verbose=True
 
-    t.trainEpochs(10)
+    t.trainEpochs(50)
 
-    print "epoch: %4d" % t.totalepochs, \
-          "  mean square error (mse): %s" % t.testOnData(tstdata)
-    print "final weights: %s" % n.params
+    mse = t.testOnData(tstdata)
+    #n.params
+
+    return t.totalepochs, mse
+
+if __name__ == '__main__':
+
+    count = 0
+    mse_t = 0
+    while count < 10:
+        epochs, mse = compute()
+
+        print "epoch: %4d" % epochs, \
+              "  mean square error (mse): %s" % mse
+
+        mse_t += mse
+        count += 1
+
+    print mse_t / 10

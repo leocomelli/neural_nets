@@ -9,7 +9,7 @@ def load_dataset(filename):
     with open(filename) as f:
         lines = f.read().splitlines()
 
-    ds = ClassificationDataSet(7, 1, class_labels=['1', '2', '3'])
+    ds = ClassificationDataSet(7, 1, nb_classes=3)
 
     for line in lines:
         array = []
@@ -20,9 +20,9 @@ def load_dataset(filename):
         else:
             clazz = int(cols[-1]) -1
 
-        print "class: %s, array = %s" % (clazz, array)
-        ds.addSample(array, clazz)
-        #ds.appendLinked(array, clazz)
+        #print "class: %s, array = %s" % (clazz, array)
+        #ds.addSample(array, clazz)
+        ds.appendLinked(array, clazz)
 
     return ds
 
@@ -30,18 +30,16 @@ def calculate_statistics_dataset(ds):
     counter = [0, 0, 0]
     for d in ds:
         d = d[1].tolist() # convert numpy.array to list
-        for i, x in enumerate(d):
-            counter[i] += x
-
+        counter[int(d[0])] += 1
     return counter
 
-if __name__ == '__main__':
+def compute():
 
     ds = load_dataset('seeds.txt')
 
     # Produce two new datasets, the first one containing the fraction given
     # by `proportion` of the samples.
-    tstdata, trndata = ds.splitWithProportion(0.25)
+    tstdata, trndata = ds.splitWithProportion(0.15)
 
     counter = calculate_statistics_dataset(trndata)
     print "Number of training patterns: ", len(trndata)
@@ -62,14 +60,14 @@ if __name__ == '__main__':
 
     # a softmax function because we are doing classification. There are more options to explore here,
     # e.g. try changing the hidden layer transfer function to linear instead of (the default) sigmoid
-    n = buildNetwork(trndata.indim, 300, trndata.outdim, outclass=SoftmaxLayer)
+    n = buildNetwork(trndata.indim, 300, 300, trndata.outdim, outclass=SoftmaxLayer)
 
     # momentum: is the ratio by which the gradient of the last timestep is used
     # weightdecay: corresponds to the weightdecay rate, where 0 is no weight decay at all.
-    t = BackpropTrainer(n, dataset=trndata, momentum=0.1, verbose=True, weightdecay=0.01)
+    t = BackpropTrainer(n, dataset=trndata, momentum=0.1, learningrate=0.001, weightdecay=0.01) #verbose=True,
 
     #for i in range(200):
-    t.trainEpochs(10)
+    t.trainEpochs(50)
 
     # percentError: return percentage of mismatch between out and target values
     # testOnClassData: Return winner-takes-all classification output on a given dataset
@@ -81,6 +79,15 @@ if __name__ == '__main__':
 
     #t.activateOnDataset(ds)
 
-    print "epoch: %4d" % t.totalepochs, \
-          "  train error: %5.2f%%" % trnresult, \
-          "  test error: %5.2f%%" % tstresult, \
+    return t.totalepochs, trnresult, tstresult
+
+if __name__ == '__main__':
+    count = 0
+    while count < 10:
+        epochs, trnresult, tstresult = compute();
+
+        print "epoch: %4d" % epochs, \
+                "  train error: %5.2f%%" % trnresult, \
+                "  test error: %5.2f%%" % tstresult
+        print "\n\n---------------------------------------------\n\n"
+        count += 1
